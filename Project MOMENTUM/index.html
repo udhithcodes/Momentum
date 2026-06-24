@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MOMENTUM — Build Consistency. Achieve Greatness.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loading-screen">
+    <div class="loader-container">
+      <div class="loader-ring-outer"></div>
+      <div class="loader-ring-inner"></div>
+      <div class="loader-logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">MOMENTUM</span>
+      </div>
+      <p class="loader-tagline">Preparing Your Productivity Space...</p>
+      <div class="loader-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="loader-particles" id="loader-particles"></div>
+  </div>
+
+  <!-- FLOATING PARTICLES BACKGROUND -->
+  <div class="particles-bg" id="particles-bg"></div>
+
+  <!-- FLOATING STUDY ICONS -->
+  <div class="floating-icons">
+    <span class="fi fi-1">📚</span>
+    <span class="fi fi-2">✏️</span>
+    <span class="fi fi-3">🎯</span>
+    <span class="fi fi-4">💡</span>
+    <span class="fi fi-5">🧠</span>
+    <span class="fi fi-6">📊</span>
+    <span class="fi fi-7">⏱️</span>
+    <span class="fi fi-8">🏆</span>
+  </div>
+
+  <!-- MAIN LOGIN WRAPPER -->
+  <div class="login-wrapper" id="login-wrapper">
+
+    <!-- LOGIN CARD -->
+    <div class="login-card" id="login-card">
+      <div class="card-glow"></div>
+
+      <!-- Logo -->
+      <div class="login-logo">
+        <div class="logo-badge">⚡</div>
+        <div>
+          <h1 class="brand-name">MOMENTUM</h1>
+          <p class="brand-tagline">Build Consistency. Achieve Greatness.</p>
+        </div>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="auth-tabs">
+        <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+        <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form class="auth-form" id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+          <span class="field-error" id="login-email-err"></span>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password"/>
+            <button type="button" class="toggle-pw" onclick="togglePassword('login-password', this)">👁️</button>
+          </div>
+          <span class="field-error" id="login-pw-err"></span>
+        </div>
+
+        <div class="form-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember-me"/>
+            <span class="checkmark"></span>
+            Remember me
+          </label>
+          <a href="#" class="forgot-link" onclick="showForgotModal()">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn-primary" id="login-btn">
+          <span class="btn-text">Sign In</span>
+          <span class="btn-loader" style="display:none;">⟳</span>
+        </button>
+
+        <div class="divider"><span>or continue with</span></div>
+
+        <div class="social-btns">
+          <button type="button" class="btn-social" onclick="demoLogin()">🚀 Demo Login</button>
+        </div>
+      </form>
+
+      <!-- SIGNUP FORM -->
+      <form class="auth-form hidden" id="signup-form" onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label>Full Name</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="signup-name" placeholder="Your name" autocomplete="name"/>
+          </div>
+          <span class="field-error" id="signup-name-err"></span>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+          <span class="field-error" id="signup-email-err"></span>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="signup-password" placeholder="Minimum 6 characters" autocomplete="new-password"/>
+            <button type="button" class="toggle-pw" onclick="togglePassword('signup-password', this)">👁️</button>
+          </div>
+          <span class="field-error" id="signup-pw-err"></span>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          <span class="btn-text">Create Account</span>
+        </button>
+      </form>
+
+      <!-- Toast Notification -->
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD MODAL -->
+  <div class="modal-overlay hidden" id="forgot-modal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeForgotModal()">✕</button>
+      <h2>Reset Password</h2>
+      <p>Enter your email and we'll send reset instructions.</p>
+      <div class="input-wrap">
+        <span class="input-icon">✉️</span>
+        <input type="email" id="forgot-email" placeholder="your@email.com"/>
+      </div>
+      <button class="btn-primary" onclick="sendReset()" style="margin-top:1rem;">Send Reset Link</button>
+    </div>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>

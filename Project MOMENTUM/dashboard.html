@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MOMENTUM — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/style.css"/>
+  <link rel="stylesheet" href="/dashboard.css"/>
+</head>
+<body class="dashboard-body">
+
+  <!-- PARTICLES -->
+  <div class="particles-bg" id="particles-bg"></div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="dash-header">
+    <div class="header-left">
+      <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <div class="header-logo">
+        <span class="logo-badge-sm">⚡</span>
+        <span class="brand-sm">MOMENTUM</span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="welcome-block">
+        <h2 class="welcome-msg" id="welcome-msg">Good Morning, Udhith 👋</h2>
+        <p class="welcome-sub">Let's make today productive.</p>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="header-datetime">
+        <span class="header-date" id="header-date"></span>
+        <span class="header-clock" id="header-clock"></span>
+      </div>
+      <button class="icon-btn notif-btn" onclick="showToast('No new notifications', 'info')" title="Notifications">
+        🔔<span class="notif-badge">2</span>
+      </button>
+      <div class="profile-menu-wrap">
+        <button class="icon-btn profile-btn" onclick="toggleProfileMenu()" title="Profile">
+          <span id="profile-avatar-hdr">😊</span>
+        </button>
+        <div id="profile-menu" class="profile-menu hidden">
+          <div class="pm-user">
+            <strong id="pm-name">Momentum User</strong>
+            <small id="pm-email"></small>
+          </div>
+          <button class="pm-item" onclick="location.href='#'">View Profile</button>
+          <button class="pm-item" onclick="location.href='#'">Settings</button>
+          <button class="pm-item danger" onclick="showToast('Signed out','info')">Sign out</button>
+        </div>
+      </div>
+  </header>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+      <a href="#schedule" class="nav-item active" onclick="smoothNav(event, this)">📅 Schedule</a>
+      <a href="#progress" class="nav-item" onclick="smoothNav(event, this)">📊 Progress</a>
+      <a href="#streak" class="nav-item" onclick="smoothNav(event, this)">🔥 Streak</a>
+      <a href="#subjects" class="nav-item" onclick="smoothNav(event, this)">📚 Subjects</a>
+      <a href="#pomodoro" class="nav-item" onclick="smoothNav(event, this)">⏱️ Pomodoro</a>
+      <a href="#calendar-sec" class="nav-item" onclick="smoothNav(event, this)">🗓️ Calendar</a>
+      <a href="#achievements" class="nav-item" onclick="smoothNav(event, this)">🏆 Achievements</a>
+      <a href="#motivation" class="nav-item" onclick="smoothNav(event, this)">💡 Motivation</a>
+      <a href="#analytics" class="nav-item" onclick="smoothNav(event, this)">📈 Analytics</a>
+    </nav>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="dash-main" id="dash-main">
+
+    <!-- ===========================
+         SECTION 1: DAILY SCHEDULE
+         =========================== -->
+    <section class="dash-section" id="schedule">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">📅 Daily Study Schedule</h2>
+          <p class="section-sub">Plan and track your study sessions</p>
+        </div>
+        <button class="btn-add" onclick="openTaskModal()">+ Add Task</button>
+      </div>
+
+      <div class="tasks-list" id="tasks-list">
+        <!-- Tasks rendered by JS -->
+        <div class="empty-state" id="tasks-empty">
+          <span class="empty-icon">📋</span>
+          <p>No tasks yet. Add your first study session!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         SECTION 2: TODAY'S PROGRESS
+         =========================== -->
+    <section class="dash-section" id="progress">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">📊 Today's Progress</h2>
+          <p class="section-sub">Track your daily productivity</p>
+        </div>
+      </div>
+
+      <div class="progress-grid">
+        <!-- Circular Progress -->
+        <div class="progress-circle-wrap glass-card">
+          <svg class="progress-ring" viewBox="0 0 120 120" width="160" height="160">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="8"/>
+            <circle cx="60" cy="60" r="50" fill="none"
+              stroke="url(#prog-gradient)"
+              stroke-width="8"
+              stroke-linecap="round"
+              stroke-dasharray="314"
+              stroke-dashoffset="314"
+              id="progress-ring-circle"
+              transform="rotate(-90 60 60)"/>
+            <defs>
+              <linearGradient id="prog-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4F46E5"/>
+                <stop offset="100%" stop-color="#06B6D4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="progress-ring-center">
+            <span class="prog-pct" id="prog-pct">0%</span>
+            <span class="prog-label">Productivity</span>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="progress-stats">
+          <div class="stat-card glass-card">
+            <div class="stat-icon" style="background:rgba(79,70,229,0.2);color:#4F46E5">📋</div>
+            <div>
+              <div class="stat-num" id="stat-total">0</div>
+              <div class="stat-lbl">Total Tasks</div>
+            </div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-icon" style="background:rgba(16,185,129,0.2);color:#10B981">✅</div>
+            <div>
+              <div class="stat-num" id="stat-done">0</div>
+              <div class="stat-lbl">Completed</div>
+            </div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-icon" style="background:rgba(245,158,11,0.2);color:#F59E0B">⏳</div>
+            <div>
+              <div class="stat-num" id="stat-remaining">0</div>
+              <div class="stat-lbl">Remaining</div>
+            </div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-icon" style="background:rgba(6,182,212,0.2);color:#06B6D4">⭐</div>
+            <div>
+              <div class="stat-num" id="stat-score">0</div>
+              <div class="stat-lbl">Score</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         SECTION 3: STUDY STREAK
+         =========================== -->
+    <section class="dash-section" id="streak">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">🔥 Study Streak</h2>
+          <p class="section-sub">Keep the flame alive!</p>
+        </div>
+        <button class="btn-secondary" onclick="markStudied()">✅ Mark Today Studied</button>
+      </div>
+
+      <div class="streak-grid">
+        <div class="streak-main glass-card">
+          <div class="streak-fire" id="streak-fire">🔥</div>
+          <div class="streak-num" id="streak-current">0</div>
+          <div class="streak-label">Day Streak</div>
+          <div class="streak-mot">"Small progress every day adds up to big results."</div>
+        </div>
+
+        <div class="streak-stats">
+          <div class="streak-stat glass-card">
+            <div class="sstat-label">🏆 Best Streak</div>
+            <div class="sstat-num" id="best-streak">0</div>
+            <div class="sstat-sub">days</div>
+          </div>
+          <div class="streak-stat glass-card">
+            <div class="sstat-label">📅 Days Studied</div>
+            <div class="sstat-num" id="days-studied">0</div>
+            <div class="sstat-sub">total</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         SECTION 4: SUBJECT TRACKER
+         =========================== -->
+    <section class="dash-section" id="subjects">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">📚 Subject Tracker</h2>
+          <p class="section-sub">Monitor your learning progress</p>
+        </div>
+      </div>
+
+      <div class="subjects-grid" id="subjects-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ===========================
+         SECTION 5: POMODORO TIMER
+         =========================== -->
+    <section class="dash-section" id="pomodoro">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">⏱️ Pomodoro Timer</h2>
+          <p class="section-sub">25-minute focused work sessions</p>
+        </div>
+      </div>
+
+      <div class="pomodoro-wrap glass-card">
+        <div class="pomo-mode-btns">
+          <button class="pomo-mode active" onclick="setPomoMode('focus',25,this)">Focus 25m</button>
+          <button class="pomo-mode" onclick="setPomoMode('short',5,this)">Short Break 5m</button>
+          <button class="pomo-mode" onclick="setPomoMode('long',15,this)">Long Break 15m</button>
+        </div>
+
+        <div class="pomo-ring-wrap">
+          <svg class="pomo-ring-svg" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="10"/>
+            <circle cx="100" cy="100" r="85" fill="none"
+              stroke="url(#pomo-grad)"
+              stroke-width="10"
+              stroke-linecap="round"
+              stroke-dasharray="534"
+              stroke-dashoffset="0"
+              id="pomo-ring"
+              transform="rotate(-90 100 100)"/>
+            <defs>
+              <linearGradient id="pomo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4F46E5"/>
+                <stop offset="100%" stop-color="#06B6D4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="pomo-center">
+            <div class="pomo-time" id="pomo-time">25:00</div>
+            <div class="pomo-status" id="pomo-status">Focus Session</div>
+          </div>
+        </div>
+
+        <div class="pomo-controls">
+          <button class="pomo-btn" onclick="startPomo()" id="pomo-start-btn">▶ Start</button>
+          <button class="pomo-btn secondary" onclick="pausePomo()" id="pomo-pause-btn" style="display:none">⏸ Pause</button>
+          <button class="pomo-btn secondary" onclick="resumePomo()" id="pomo-resume-btn" style="display:none">▶ Resume</button>
+          <button class="pomo-btn secondary" onclick="resetPomo()">↺ Reset</button>
+        </div>
+
+        <div class="pomo-sessions">
+          <span>Sessions today: </span>
+          <span class="pomo-dots" id="pomo-dots">○ ○ ○ ○</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         SECTION 6: MONTHLY CALENDAR
+         =========================== -->
+    <section class="dash-section" id="calendar-sec">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">🗓️ Monthly Calendar</h2>
+          <p class="section-sub">Your study schedule at a glance</p>
+        </div>
+      </div>
+
+      <div class="calendar-wrap glass-card">
+        <div class="cal-header">
+          <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+          <h3 class="cal-month" id="cal-month-label"></h3>
+          <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+        </div>
+        <div class="cal-weekdays">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+          <span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+
+      <!-- Day task popup -->
+      <div class="day-popup hidden" id="day-popup">
+        <div class="day-popup-header">
+          <span id="day-popup-title">Tasks for Jan 1</span>
+          <button onclick="closeDayPopup()">✕</button>
+        </div>
+        <div class="day-popup-body" id="day-popup-body"></div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         SECTION 7: ACHIEVEMENTS
+         =========================== -->
+    <section class="dash-section" id="achievements">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">🏆 Achievement Gallery</h2>
+          <p class="section-sub">Your milestones and badges</p>
+        </div>
+      </div>
+
+      <div class="badges-grid" id="badges-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ===========================
+         SECTION 8: DAILY MOTIVATION
+         =========================== -->
+    <section class="dash-section" id="motivation">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">💡 Daily Motivation</h2>
+          <p class="section-sub">Fuel your focus</p>
+        </div>
+        <button class="btn-secondary" onclick="newQuote()">✨ New Quote</button>
+      </div>
+
+      <div class="quote-card glass-card" id="quote-card">
+        <div class="quote-mark">"</div>
+        <p class="quote-text" id="quote-text">Discipline beats motivation.</p>
+        <div class="quote-author" id="quote-author">— MOMENTUM</div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         SECTION 9: ANALYTICS
+         =========================== -->
+    <section class="dash-section" id="analytics">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">📈 Analytics Dashboard</h2>
+          <p class="section-sub">Insights into your study habits</p>
+        </div>
+      </div>
+
+      <div class="analytics-grid">
+        <!-- Summary Cards -->
+        <div class="analytics-stats">
+          <div class="an-card glass-card">
+            <div class="an-icon">📅</div>
+            <div class="an-num" id="an-weekly">0h</div>
+            <div class="an-lbl">Weekly Hours</div>
+          </div>
+          <div class="an-card glass-card">
+            <div class="an-icon">📆</div>
+            <div class="an-num" id="an-monthly">0h</div>
+            <div class="an-lbl">Monthly Hours</div>
+          </div>
+          <div class="an-card glass-card">
+            <div class="an-icon">🥇</div>
+            <div class="an-num" id="an-top-subject">—</div>
+            <div class="an-lbl">Top Subject</div>
+          </div>
+          <div class="an-card glass-card">
+            <div class="an-icon">✅</div>
+            <div class="an-num" id="an-completion">0%</div>
+            <div class="an-lbl">Completion Rate</div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-row">
+          <div class="chart-card glass-card">
+            <h4>Weekly Study Hours</h4>
+            <canvas id="weekly-chart" height="180"></canvas>
+          </div>
+          <div class="chart-card glass-card">
+            <h4>Subject Distribution</h4>
+            <canvas id="subject-chart" height="180"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- /.dash-main -->
+
+  <!-- ===========================
+       TASK MODAL
+       =========================== -->
+  <div class="modal-overlay hidden" id="task-modal">
+    <div class="modal-card task-modal-card">
+      <button class="modal-close" onclick="closeTaskModal()">✕</button>
+      <h2 id="task-modal-title">Add Study Task</h2>
+
+      <div class="form-group">
+        <label>Subject Name</label>
+        <div class="input-wrap">
+          <span class="input-icon">📚</span>
+          <input type="text" id="task-subject" placeholder="e.g. JavaScript"/>
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Start Time</label>
+          <div class="input-wrap">
+            <span class="input-icon">🕐</span>
+            <input type="time" id="task-start"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>End Time</label>
+          <div class="input-wrap">
+            <span class="input-icon">🕔</span>
+            <input type="time" id="task-end"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Priority</label>
+        <div class="priority-btns">
+          <button class="pri-btn active" data-pri="High" onclick="selectPriority(this)">🔴 High</button>
+          <button class="pri-btn" data-pri="Medium" onclick="selectPriority(this)">🟡 Medium</button>
+          <button class="pri-btn" data-pri="Low" onclick="selectPriority(this)">🟢 Low</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Notes (optional)</label>
+        <div class="input-wrap">
+          <span class="input-icon">📝</span>
+          <input type="text" id="task-notes" placeholder="Any additional notes..."/>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
+        <button class="btn-primary" onclick="saveTask()" style="flex:1">Save Task</button>
+        <button class="btn-secondary-outline" onclick="closeTaskModal()" style="flex:1">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===========================
+       SUBJECT HOURS MODAL
+       =========================== -->
+  <div class="modal-overlay hidden" id="subject-modal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeSubjectModal()">✕</button>
+      <h2 id="sub-modal-title">Log Study Hours</h2>
+      <div class="form-group" style="margin-top:1rem">
+        <label>Hours studied</label>
+        <div class="input-wrap">
+          <span class="input-icon">⏱️</span>
+          <input type="number" id="sub-hours" placeholder="e.g. 2" min="0" max="24" step="0.5"/>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="saveSubjectHours()" style="margin-top:1rem">Save</button>
+    </div>
+  </div>
+
+  <!-- GLOBAL TOAST -->
+  <div class="global-toast" id="global-toast"></div>
+
+  <script src="dashboard.js"></script>
+  <script src="calendar.js"></script>
+  <script src="timer.js"></script>
+  <script src="analytics.js"></script>
+</body>
+</html>
